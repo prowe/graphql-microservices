@@ -17,16 +17,21 @@ Resources:
   GraphQLApi:
     Type: AWS::AppSync::GraphQLApi
     Properties:
-      Name: coral
+      Name: prowe-graphql
       AuthenticationType: API_KEY
   ApiKey:
     Type: AWS::AppSync::ApiKey
     Properties:
       ApiId: !GetAtt GraphQLApi.ApiId
+  Schema:
+    Type: AWS::AppSync::GraphQLSchema
+    Properties:
+      ApiId: !GetAtt GraphQLApi.ApiId
+      DefinitionS3Location: ./schema.graphql
 Outputs:
   GraphQLUrl:
     Value: !GetAtt GraphQLApi.GraphQLUrl
   ApiId:
     Value: !GetAtt GraphQLApi.ApiId
     Export:
-      Name: !Sub "${AWS::StackName}}-ApiId"
+      Name: !Sub "${AWS::StackName}-ApiId"
