@@ -1,0 +1,42 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: GraphQL API layer (prowe)
+Transform: AWS::Serverless-2016-10-31
+Resources:
+  AppRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service: appsync.amazonaws.com
+          Action: sts:AssumeRole
+      ManagedPolicyArns:
+      - arn:aws:iam::aws:policy/service-role/AWSLambdaRole
+  GraphQLApi:
+    Type: AWS::AppSync::GraphQLApi
+    Properties:
+      Name: coral
+      AuthenticationType: API_KEY
+  ApiKey:
+    Type: AWS::AppSync::ApiKey
+    Properties:
+      ApiId:
+        Fn::GetAtt:
+        - GraphQLApi
+        - ApiId
+Outputs:
+  GraphQLUrl:
+    Value:
+      Fn::GetAtt:
+      - GraphQLApi
+      - GraphQLUrl
+  ApiId:
+    Value:
+      Fn::GetAtt:
+      - GraphQLApi
+      - ApiId
+    Export:
+      Name:
+        Fn::Sub: ${AWS::StackName}}-ApiId
