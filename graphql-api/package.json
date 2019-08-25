@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "dependencies": {},
+  "dependencies": {
+    "graphql": "^14.5.3",
+    "graphql-tools": "^4.0.5"
+  },
   "devDependencies": {
     "@aws-amplify/cli": "^1.12.0"
   },
