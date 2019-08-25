@@ -1,0 +1,31 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Teammate service for GraphQL (prowe)
+Transform: 'AWS::Serverless-2016-10-31'
+Resources:
+  TeammatesTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+  CreateTeammateLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./src
+      Handler: create-teammate.handler
+      Runtime: nodejs10.x
+      Policies:
+        - arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref TeammatesTable
+  Schema:
+    Type: AWS::AppSync::GraphQLSchema
+    Properties:
+      ApiId: !ImportValue prowe-graphql-api-ApiId
+      DefinitionS3Location: ./schema.graphql
+Outputs: {}

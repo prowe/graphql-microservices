@@ -1,0 +1,23 @@
+schema {
+    query: Query
+    mutation: Mutation
+}
+
+type Query {
+    """We need something in teammate service"""
+    messageOfTheDay: String!
+}
+
+type Mutation {
+    """We need something in the teammate service"""
+    noOp: String!
+}
+
+type Teammate {
+    id: ID!
+    name: String!
+}
+
+extend type Mutation {
+    createTeammate(teammate: Teammate!): Teammate
+}

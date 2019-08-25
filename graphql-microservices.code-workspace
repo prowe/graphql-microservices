@@ -2,6 +2,9 @@
 	"folders": [
 		{
 			"path": "graphql-api"
+		},
+		{
+			"path": "teammate-service"
 		}
 	],
 	"settings": {}
