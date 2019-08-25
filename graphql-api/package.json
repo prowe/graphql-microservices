@@ -1,0 +1,15 @@
+{
+  "name": "graphql-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {
+    "@aws-amplify/cli": "^1.12.0"
+  },
+  "scripts": {
+    "amplify": "amplify"
+  },
+  "author": "",
+  "license": "ISC"
+}
