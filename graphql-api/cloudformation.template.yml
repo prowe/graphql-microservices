@@ -27,7 +27,7 @@ Resources:
     Type: AWS::AppSync::GraphQLSchema
     Properties:
       ApiId: !GetAtt GraphQLApi.ApiId
-      DefinitionS3Location: ./schema.graphql
+      DefinitionS3Location: ./merged-schema.graphql
 Outputs:
   GraphQLUrl:
     Value: !GetAtt GraphQLApi.GraphQLUrl

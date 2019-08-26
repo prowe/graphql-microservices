@@ -2,6 +2,8 @@
 
 export AWS_REGION=us-east-1
 
+cat schemas/*.graphql > merged-schema.graphql
+
 aws cloudformation package \
     --template-file=cloudformation.template.yml \
     --s3-bucket=prowe-deploy-bucket \
@@ -9,5 +11,5 @@ aws cloudformation package \
 
 aws cloudformation deploy \
     --stack-name=prowe-graphql-api \
-    --template-file=ccloudformation.transformed.yml \
+    --template-file=cloudformation.transformed.yml \
     --capabilities=CAPABILITY_IAM

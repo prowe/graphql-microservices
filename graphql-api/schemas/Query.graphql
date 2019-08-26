@@ -1,0 +1,4 @@
+type Query {
+    """We need something because an empty type isn't valid """
+    messageOfTheDay: String!
+}

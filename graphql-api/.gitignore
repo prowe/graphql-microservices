@@ -1,2 +1,3 @@
 cloudformation.transformed.yml
 node_modules
+merged-schema.graphql

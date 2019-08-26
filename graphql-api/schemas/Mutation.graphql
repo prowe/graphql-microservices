@@ -1,0 +1,4 @@
+type Mutation {
+    """We need something because an empty type isn't valid """
+    noOp: String!
+}
