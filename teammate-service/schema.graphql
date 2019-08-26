@@ -1,8 +1,0 @@
-type Teammate {
-    id: ID!
-    name: String!
-}
-
-extend type Mutation {
-    createTeammate(teammate: Teammate!): Teammate
-}

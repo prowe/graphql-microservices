@@ -12,6 +12,7 @@ Resources:
       KeySchema:
         - AttributeName: id
           KeyType: HASH
+
   CreateTeammateLambda:
     Type: AWS::Serverless::Function
     Properties:
@@ -23,9 +24,54 @@ Resources:
       Environment:
         Variables:
           TABLE_NAME: !Ref TeammatesTable
-  Schema:
-    Type: AWS::AppSync::GraphQLSchema
+  CreateTeammateDatasource:
+    Type: AWS::AppSync::DataSource
     Properties:
       ApiId: !ImportValue prowe-graphql-api-ApiId
-      DefinitionS3Location: ./schema.graphql
+      Name: CreateTeammateDatasource
+      ServiceRoleArn: !ImportValue prowe-graphql-api-ApiRoleArn
+      Type: AWS_LAMBDA
+      LambdaConfig:
+        LambdaFunctionArn: !GetAtt CreateTeammateLambda.Arn
+  CreateTeammateResolver:
+    Type: AWS::AppSync::Resolver
+    Properties:
+      ApiId: !ImportValue prowe-graphql-api-ApiId
+      DataSourceName: !GetAtt CreateTeammateDatasource.Name
+      TypeName: Mutation
+      FieldName: createTeammate
+      RequestMappingTemplateS3Location: ./request-mapping.vm
+      ResponseMappingTemplate: |
+        $utils.toJson($context.result)
+
+  ListTeammateLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./src
+      Handler: list-teammates.handler
+      Runtime: nodejs10.x
+      Policies:
+        - arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref TeammatesTable
+  ListTeammatesDatasource:
+    Type: AWS::AppSync::DataSource
+    Properties:
+      ApiId: !ImportValue prowe-graphql-api-ApiId
+      Name: ListTeammatesDatasource
+      ServiceRoleArn: !ImportValue prowe-graphql-api-ApiRoleArn
+      Type: AWS_LAMBDA
+      LambdaConfig:
+        LambdaFunctionArn: !GetAtt ListTeammateLambda.Arn
+  ListTeammatesResolver:
+    Type: AWS::AppSync::Resolver
+    Properties:
+      ApiId: !ImportValue prowe-graphql-api-ApiId
+      DataSourceName: !GetAtt ListTeammatesDatasource.Name
+      TypeName: Query
+      FieldName: teammates
+      RequestMappingTemplateS3Location: ./request-mapping.vm
+      ResponseMappingTemplate: |
+        $utils.toJson($context.result)
 Outputs: {}

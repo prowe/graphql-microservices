@@ -35,3 +35,7 @@ Outputs:
     Value: !GetAtt GraphQLApi.ApiId
     Export:
       Name: !Sub "${AWS::StackName}-ApiId"
+  ApiRoleArn:
+    Value: !GetAtt AppRole.Arn
+    Export:
+      Name: !Sub "${AWS::StackName}-ApiRoleArn"

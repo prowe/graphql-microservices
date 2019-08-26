@@ -1,0 +1,4 @@
+input TeammateCreate {
+    id: ID!
+    name: String!
+}

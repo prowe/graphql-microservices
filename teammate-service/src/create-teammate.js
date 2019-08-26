@@ -9,7 +9,8 @@ async function saveTeammate(teammate) {
 }
 
 module.exports.handler = async function putEntity(event, context) {
-    const teammate = event.teammate;
+    const teammate = event.arguments.teammate;
+    console.log('creating teammate: ', teammate);
     await saveTeammate(teammate);
     return teammate;
 };

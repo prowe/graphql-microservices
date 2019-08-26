@@ -1,0 +1,4 @@
+type Teammate {
+    id: ID!
+    name: String!
+}
