@@ -1,41 +1,65 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Description: GraphQL API layer (prowe)
 Transform: 'AWS::Serverless-2016-10-31'
+Globals:
+  Function:
+    Runtime: nodejs10.x
+Parameters:
+  DomainName:
+    Type: String
+    Default: prowe-graphql.dev.sourceallies.com
 Resources:
-  AppRole:
-    Type: AWS::IAM::Role
+  Api:
+    Type: AWS::Serverless::Api
     Properties:
-      AssumeRolePolicyDocument:
-        Version: "2012-10-17"
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service: appsync.amazonaws.com
-            Action: sts:AssumeRole
-      ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/service-role/AWSLambdaRole
-  GraphQLApi:
-    Type: AWS::AppSync::GraphQLApi
+      StageName: Prod
+  Certificate:
+    Type: AWS::CertificateManager::Certificate
     Properties:
-      Name: prowe-graphql
-      AuthenticationType: API_KEY
-  ApiKey:
-    Type: AWS::AppSync::ApiKey
+      DomainName: !Ref DomainName
+      DomainValidationOptions:
+        - DomainName: !Ref DomainName
+          ValidationDomain: dev.sourceallies.com
+  ApiDomainName:
+    Type: AWS::ApiGateway::DomainName
     Properties:
-      ApiId: !GetAtt GraphQLApi.ApiId
-  Schema:
-    Type: AWS::AppSync::GraphQLSchema
+      CertificateArn: !Ref Certificate
+      DomainName: !Ref DomainName
+  BasePathMapping:
+    Type: AWS::ApiGateway::BasePathMapping
     Properties:
-      ApiId: !GetAtt GraphQLApi.ApiId
-      DefinitionS3Location: ./merged-schema.graphql
+      DomainName: !Ref DomainName
+      RestApiId: !Ref Api
+      Stage: Prod
+  Route53:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      Name: "prowe-graphql.dev.sourceallies.com"
+      HostedZoneName: "dev.sourceallies.com."
+      Type: A
+      AliasTarget:
+        DNSName: !GetAtt ApiDomainName.DistributionDomainName
+        HostedZoneId: !GetAtt ApiDomainName.DistributionHostedZoneId
+  GraphQLEndpoint:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/graphql-handler.handler
+      Runtime: nodejs10.x
+      Policies:
+        - AWSLambdaExecute
+      Events:
+        Get:
+          Type: Api
+          Properties:
+            RestApiId: !Ref Api
+            Path: /graphql
+            Method: get
+        Post:
+          Type: Api
+          Properties:
+            RestApiId: !Ref Api
+            Path: /graphql
+            Method: post
+
 Outputs:
-  GraphQLUrl:
-    Value: !GetAtt GraphQLApi.GraphQLUrl
-  ApiId:
-    Value: !GetAtt GraphQLApi.ApiId
-    Export:
-      Name: !Sub "${AWS::StackName}-ApiId"
-  ApiRoleArn:
-    Value: !GetAtt AppRole.Arn
-    Export:
-      Name: !Sub "${AWS::StackName}-ApiRoleArn"
+  {}

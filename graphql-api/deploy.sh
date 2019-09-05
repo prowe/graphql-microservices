@@ -3,10 +3,10 @@ set -e
 
 export AWS_REGION=us-east-1
 
-for f in schemas/*.graphql; do
-    echo
-    cat "$f"
-done > merged-schema.graphql
+# for f in schemas/*.graphql; do
+#     echo
+#     cat "$f"
+# done > merged-schema.graphql
 
 aws cloudformation package \
     --template-file=cloudformation.template.yml \
